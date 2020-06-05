@@ -11,22 +11,25 @@ Window {
     height: 800
     title: qsTr("Speedometer")
 
+
     Rectangle
     {
         id: background
         anchors.fill: parent
         color: "black"
-        z:1
+        z:0
     }
 
-    TextInput {
-        x: 0
-        y: 0
-        z: 3
-
-        width: 100
-        height: 100
-    }
 
     Component.onCompleted: Visual.createSpriteObjects();
+
+    Item {
+        Timer {
+
+            interval: 40; running: true; repeat: true
+            onTriggered: Visual.nextRow()
+        }
+
+        Text { id: time }
+    }
 }

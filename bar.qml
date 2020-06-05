@@ -8,6 +8,9 @@ import QtGraphicalEffects 1.12
 
 Item {
 
+    property alias value: indicator.value
+    property alias maximumValue: indicator.maximumValue
+
     id:window
     visible: true
     width: 200
@@ -297,9 +300,9 @@ Item {
 
     Gauge {
 
+        id: indicator
+
         z:12
-
-
         minimumValue: 0
         value: 50
         maximumValue: 100

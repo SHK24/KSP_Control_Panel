@@ -5,5 +5,6 @@
         <file>bar.qml</file>
         <file>main.qml</file>
         <file>button.qml</file>
+        <file>spaceLog.txt</file>
     </qresource>
 </RCC>

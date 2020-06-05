@@ -2,13 +2,41 @@ var speedDirect = 1;
 var component;
 var sprite;
 
+var speedindicator;
+var altIndicator;
+var massIndicator;
+var pressIndicator;
+
+var log = []
+
+var rowCounter = 0
+
+function nextRow() {
+    console.log(log[rowCounter])
+
+    if(rowCounter > log.length) return;
+
+    var alt   = log[rowCounter].split('|')[0].split(':')[1]
+    var mass  = log[rowCounter].split('|')[1].split(':')[1]
+    var speed = log[rowCounter].split('|')[2].split(':')[1]
+    var press = log[rowCounter].split('|')[4].split(':')[1]
+
+    console.log(speed)
+
+    speedindicator.value = parseFloat(speed)
+    altIndicator.value = parseFloat(alt) % 10000
+    massIndicator.value = mass
+    pressIndicator.value = press * 100.0
+
+    rowCounter += 1
+}
 
 function finishSpeedometerCreation() {
 
     console.log("Finish Creation")
 
     if (component.status == Component.Ready) {
-        sprite = component.createObject(appWindow, {x: 0, y: 400, z: 3});
+        speedindicator = component.createObject(appWindow, {x: 0, y: 400, z: 3});
         if (sprite == null) {
             // Error Handling
             console.log("Error creating object");
@@ -24,7 +52,39 @@ function finishAreometerCreation() {
     console.log("Finish Creation")
 
     if (component.status == Component.Ready) {
-        sprite = component.createObject(appWindow, {x: 400, y: 400, z: 3});
+        altIndicator = component.createObject(appWindow, {x: 400, y: 400, z: 3, maximumValue : 10000, tickCapacity : 1000});
+        if (altIndicator == null) {
+            // Error Handling
+            console.log("Error creating object");
+        }
+    } else if (altIndicator.status == Component.Error) {
+        // Error Handling
+        console.log("Error loading component:", component.errorString());
+    }
+}
+
+function finishMassCreation() {
+
+    console.log("Finish Creation")
+
+    if (component.status == Component.Ready) {
+        massIndicator = component.createObject(appWindow, {x: 400, y: 0, z: 3, maximumValue: 100});
+        if (massIndicator == null) {
+            // Error Handling
+            console.log("Error creating object");
+        }
+    } else if (component.status == Component.Error) {
+        // Error Handling
+        console.log("Error loading component:", component.errorString());
+    }
+}
+
+function finishPressCreation() {
+
+    console.log("Finish Creation")
+
+    if (component.status == Component.Ready) {
+        pressIndicator = component.createObject(appWindow, {x: 600, y: 0, z: 3, maximumValue: 30});
         if (sprite == null) {
             // Error Handling
             console.log("Error creating object");
@@ -35,28 +95,15 @@ function finishAreometerCreation() {
     }
 }
 
-function finishFuelCreation() {
+function finishButtonCreation() {
 
-    console.log("Finish Creation")
-
-    if (component.status == Component.Ready) {
-        sprite = component.createObject(appWindow, {x: 400, y: 0, z: 3});
-        if (sprite == null) {
-            // Error Handling
-            console.log("Error creating object");
-        }
-    } else if (component.status == Component.Error) {
-        // Error Handling
-        console.log("Error loading component:", component.errorString());
-    }
-}
-
-function finishMonoCreation() {
-
-    console.log("Finish Creation")
+    console.log("Finish Button Creation")
 
     if (component.status == Component.Ready) {
-        sprite = component.createObject(appWindow, {x: 600, y: 0, z: 3});
+        sprite = component.createObject(appWindow, {x: 0, y: 0, z: 3});
+        sprite = component.createObject(appWindow, {x: 200, y: 0, z: 3});
+        sprite = component.createObject(appWindow, {x: 0, y: 200, z: 3});
+        sprite = component.createObject(appWindow, {x: 200, y: 200, z: 3});
         if (sprite == null) {
             // Error Handling
             console.log("Error creating object");
@@ -89,51 +136,53 @@ function createSpriteObjects() {
 
     component = Qt.createComponent("bar.qml");
     if (component.status == Component.Ready)
-        finishFuelCreation();
+        finishMassCreation();
     else
-        component.statusChanged.connect(finishFuelCreation);
+        component.statusChanged.connect(finishMassCreation);
 
     console.log("Create mono indicator")
 
     component = Qt.createComponent("bar.qml");
     if (component.status == Component.Ready)
-        finishMonoCreation();
+        finishPressCreation();
     else
-        component.statusChanged.connect(finishMonoCreation);
+        component.statusChanged.connect(finishPressCreation);
+
 
     component = Qt.createComponent("button.qml");
+
     if (component.status == Component.Ready)
         finishButtonCreation();
     else
         component.statusChanged.connect(finishButtonCreation);
+
+    readLog();
 }
 
-//function finishCreation() {
+function readLog(){
+    var xhr = new XMLHttpRequest;
+    xhr.open("GET", "file://:/spaceLog.txt"); // set Method and File
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState === XMLHttpRequest.DONE){ // if request_status == DONE
+            var response = xhr.responseText;
 
-//    console.log("Finish Creation")
+            log = response.split('\n')
+        }
+    }
+    xhr.send(); // begin the request
+}
 
-//    if (component.status == Component.Ready) {
-//        sprite = component.createObject(appWindow, {x: 0, y: 400, z: 3});
-//        if (sprite == null) {
-//            // Error Handling
-//            console.log("Error creating object");
-//        }
-//    } else if (component.status == Component.Error) {
-//        // Error Handling
-//        console.log("Error loading component:", component.errorString());
-//    }
-//}
 
 function func() {
-    speed.value += speedDirect
+//    speed.value += speedDirect
 
-    if(speed.value === 100) speedDirect = -1;
-    if(speed.value ===   0) speedDirect = 1;
+//    if(speed.value === 100) speedDirect = -1;
+//    if(speed.value ===   0) speedDirect = 1;
 
-//    taho.value += speedDirect
+////    taho.value += speedDirect
 
-//    if(taho.value === 100) speedDirect = -1;
-//    if(taho.value ===   0) speedDirect = 1;
+////    if(taho.value === 100) speedDirect = -1;
+////    if(taho.value ===   0) speedDirect = 1;
 }
 
 function lightSwitch() {

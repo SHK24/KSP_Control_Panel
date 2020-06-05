@@ -1,5 +1,4 @@
 import QtQuick 2.12
-import QtQuick.Window 2.12
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Extras 1.4
@@ -9,6 +8,11 @@ import QtGraphicalEffects 1.12
 import "visual.js" as Visual
 
 Item {
+
+    property alias value: indicator.value
+    property alias maximumValue: indicator.maximumValue
+    property alias tickCapacity: indicator.tickCapacity
+
     visible: true
     width: 400
     height: 400
@@ -325,21 +329,13 @@ Item {
         }
 
 
-        Item {
-            Timer {
-
-                interval: 20; running: true; repeat: true
-                onTriggered: Visual.func()
-            }
-
-            Text { id: time }
-        }
-
         CircularGauge {
 
-            id: speed
+            id: indicator
 
             value: 10
+            maximumValue: 1000
+            property var tickCapacity: 100
             z:3
 
             anchors.horizontalCenter: parent.horizontalCenter
@@ -348,6 +344,8 @@ Item {
             style: CircularGaugeStyle {
 
                 id : speedStyle
+                property var tickCapacity: parent.tickCapacity
+
 
                 needle: Rectangle {
                     y: outerRadius * 0.15
@@ -358,14 +356,15 @@ Item {
                 }
 
                 tickmarkLabel:  Text {
-                    font.pixelSize: Math.max(6, outerRadius * 0.15)
+                    visible: styleData.value % indicator.tickCapacity == 0
+                    font.pixelSize: Math.max(6, TimuterRadius * 0.15)
                     text: styleData.value
                     color: "white"
                     antialiasing: true
                 }
 
                 tickmark: Rectangle {
-                    visible: styleData.value < 80 || styleData.value % 10 == 0
+                    visible: styleData.value % indicator.tickCapacity == 0
                     implicitWidth: outerRadius * 0.03
                     antialiasing: true
                     implicitHeight: outerRadius * 0.06

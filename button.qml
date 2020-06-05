@@ -1,20 +1,37 @@
 import QtQuick 2.12
-import QtQuick.Window 2.12
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.5
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Extras 1.4
-import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.12
+import QtGraphicalEffects 1.0
 
 Item {
     width: 200
     height: 200
 
     Rectangle {
-        anchors.fill: parent
+
+        width: parent.width-2
+        height: parent.height-2
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+
+        radius: 30
 
         color: "gray"
         z:1
+    }
+
+    Rectangle {
+
+        id: mainBorder
+
+        anchors.fill: parent
+
+        radius: 30
+
+        color: "black"
+        z:0
     }
 
     Rectangle {
